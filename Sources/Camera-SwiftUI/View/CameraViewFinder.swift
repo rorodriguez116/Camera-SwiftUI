@@ -19,7 +19,7 @@ public struct CameraPreviewer: UIViewRepresentable {
         self.size = size
     }
     
-    func makeUIView(context: Context) -> UIView {
+    public func makeUIView(context: Context) -> UIView {
         let viewFinder = UIView()
         viewFinder.frame.size = CGSize(width: size.width, height: size.height)
         //        Adds videoPreviewLayer to the PreviewView layer herarchy
@@ -30,7 +30,7 @@ public struct CameraPreviewer: UIViewRepresentable {
         return viewFinder
     }
     
-    func updateUIView(_ uiView: UIView, context: Context) {
+    public func updateUIView(_ uiView: UIView, context: Context) {
         
     }
 }
@@ -51,11 +51,11 @@ public struct CameraFocusView: UIViewRepresentable {
         focusView.backgroundColor = .clear
     }
     
-    func makeCoordinator() -> CameraFocusView.Coordinator {
+    public func makeCoordinator() -> CameraFocusView.Coordinator {
         Coordinator(videoPreviewLayer: self.videoPreviewLayer, focusAction: self.focusAction, focusView: self.focusView)
     }
     
-    func makeUIView(context: Context) -> UIView {
+    public func makeUIView(context: Context) -> UIView {
         let viewFinder = UIView()
         viewFinder.backgroundColor = UIColor.clear
         let gRecognizer = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.focusAndExposeTap(gestureRecognizer:)))
@@ -65,11 +65,11 @@ public struct CameraFocusView: UIViewRepresentable {
         return viewFinder
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {
+    public func updateUIView(_ uiView: UIView, context: Context) {
         
     }
         
-    class Coordinator: NSObject {
+    public class Coordinator: NSObject {
         private var videoPreviewLayer: AVCaptureVideoPreviewLayer
         private var focusAction: (CGPoint) -> ()
         private var focusView: UIView
