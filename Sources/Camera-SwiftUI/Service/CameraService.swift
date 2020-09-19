@@ -19,12 +19,12 @@ public struct Photo: Identifiable, Equatable {
 }
 
 public struct AlertError {
-    var title: String = ""
-    var message: String = ""
-    var primaryButtonTitle = "Accept"
-    var secondaryButtonTitle: String?
-    var primaryAction: (() -> ())?
-    var secondaryAction: (() -> ())?
+    public var title: String = ""
+    public var message: String = ""
+    public var primaryButtonTitle = "Accept"
+    public var secondaryButtonTitle: String?
+    public var primaryAction: (() -> ())?
+    public var secondaryAction: (() -> ())?
 }
 
 extension Photo {
@@ -49,14 +49,14 @@ public class CameraService: NSObject, Identifiable {
     
     //    MARK: Observed Properties UI must react to
     
-    @Published var flashMode: AVCaptureDevice.FlashMode = .off
-    @Published var shouldShowAlertView = false
-    @Published var shouldShowSpinner = false
+    @Published public var flashMode: AVCaptureDevice.FlashMode = .off
+    @Published public var shouldShowAlertView = false
+    @Published public var shouldShowSpinner = false
     
-    @Published var willCapturePhoto = false
-    @Published var isCameraButtonDisabled = false
-    @Published var isCameraUnavailable = false
-    @Published var photo: Photo?
+    @Published public var willCapturePhoto = false
+    @Published public var isCameraButtonDisabled = false
+    @Published public var isCameraUnavailable = false
+    @Published public var photo: Photo?
     
     //    MARK: Alert properties
     var alertError: AlertError = AlertError()
@@ -90,7 +90,7 @@ public class CameraService: NSObject, Identifiable {
     
     //    MARK: Init
     
-    override init() {
+    override public init() {
         super.init()
         
         // Disable the UI. Enable the UI later, if and only if the session starts running.
@@ -104,7 +104,7 @@ public class CameraService: NSObject, Identifiable {
         videoPreviewLayer.videoGravity = .resizeAspectFill
     }
     
-    private func configure() {
+    public func configure() {
         /*
          Setup the capture session.
          In general, it's not safe to mutate an AVCaptureSession or any of its
@@ -121,7 +121,7 @@ public class CameraService: NSObject, Identifiable {
     }
     
     //        MARK: Checks for permisions, setup obeservers and starts running session
-    func checkForPermissions() {
+    public func checkForPermissions() {
         /*
          Check the video authorization status. Video access is required and audio
          access is optional. If the user denies audio access, AVCam won't
@@ -273,7 +273,7 @@ public class CameraService: NSObject, Identifiable {
     //  MARK: Device Configuration
     
     /// - Tag: ChangeCamera
-    func changeCamera() {
+    public func changeCamera() {
         //        MARK: Here disable all camera operation related buttons due to configuration is due upon and must not be interrupted
         DispatchQueue.main.async {
             self.isCameraButtonDisabled = true
@@ -352,7 +352,7 @@ public class CameraService: NSObject, Identifiable {
         }
     }
     
-    private func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
+    func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
         sessionQueue.async {
             guard let device = self.videoDeviceInput?.device else { return }
             do {
