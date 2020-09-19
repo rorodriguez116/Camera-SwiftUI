@@ -10,11 +10,11 @@ import UIKit
 import AVFoundation
 import SwiftUI
 
-struct CameraPreviewer: UIViewRepresentable {
+public struct CameraPreviewer: UIViewRepresentable {
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer
     private var size: CGSize
     
-    init(previewLayer: AVCaptureVideoPreviewLayer, size: CGSize) {
+    public init(previewLayer: AVCaptureVideoPreviewLayer, size: CGSize) {
         self.videoPreviewLayer = previewLayer
         self.size = size
     }
@@ -35,12 +35,12 @@ struct CameraPreviewer: UIViewRepresentable {
     }
 }
 
-struct CameraFocusView: UIViewRepresentable {
+public struct CameraFocusView: UIViewRepresentable {
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer
     private let focusAction: (CGPoint) -> ()
     private var focusView: UIView
 
-    init(previewLayer: AVCaptureVideoPreviewLayer, onTapAction: @escaping (CGPoint) -> ()) {
+    public init(previewLayer: AVCaptureVideoPreviewLayer, onTapAction: @escaping (CGPoint) -> ()) {
         self.focusAction = onTapAction
         self.focusView = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         self.videoPreviewLayer = previewLayer

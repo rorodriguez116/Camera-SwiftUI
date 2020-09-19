@@ -59,13 +59,13 @@ public class CameraService: NSObject, Identifiable {
     @Published public var photo: Photo?
     
     //    MARK: Alert properties
-    var alertError: AlertError = AlertError()
+    public var alertError: AlertError = AlertError()
     
     // MARK: Session Management Properties
     
     let session = AVCaptureSession()
     
-    var videoPreviewLayer: AVCaptureVideoPreviewLayer!
+    public var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     var isSessionRunning = false
     var isConfigured = false
     var setupResult: SessionSetupResult = .success
@@ -352,7 +352,7 @@ public class CameraService: NSObject, Identifiable {
         }
     }
     
-    func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
+    public func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
         sessionQueue.async {
             guard let device = self.videoDeviceInput?.device else { return }
             do {
@@ -381,7 +381,7 @@ public class CameraService: NSObject, Identifiable {
     }
     
     
-    func focus(at point: CGPoint){
+    public func focus(at point: CGPoint){
         let device = self.videoDeviceInput.device
         let focusPoint = self.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: point)
         do {
