@@ -104,7 +104,7 @@ public class CameraService: NSObject, Identifiable {
         videoPreviewLayer.videoGravity = .resizeAspectFill
     }
     
-    func configure() {
+    private func configure() {
         /*
          Setup the capture session.
          In general, it's not safe to mutate an AVCaptureSession or any of its
@@ -169,7 +169,7 @@ public class CameraService: NSObject, Identifiable {
     
     // Call this on the session queue.
     /// - Tag: ConfigureSession
-    func configureSession() {
+    private func configureSession() {
         if setupResult != .success {
             return
         }
@@ -243,7 +243,7 @@ public class CameraService: NSObject, Identifiable {
         self.start()
     }
     
-    func resumeInterruptedSession() {
+    private func resumeInterruptedSession() {
         sessionQueue.async {
             /*
              The session might fail to start running, for example, if a phone or FaceTime call is still
@@ -352,7 +352,7 @@ public class CameraService: NSObject, Identifiable {
         }
     }
     
-    func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
+    private func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
         sessionQueue.async {
             guard let device = self.videoDeviceInput?.device else { return }
             do {
@@ -399,7 +399,7 @@ public class CameraService: NSObject, Identifiable {
         }
     }
     
-    @objc func stop(completion: (() -> ())? = nil) {
+    @objc public func stop(completion: (() -> ())? = nil) {
         sessionQueue.async {
             if self.isSessionRunning {
                 if self.setupResult == .success {
@@ -420,7 +420,7 @@ public class CameraService: NSObject, Identifiable {
         }
     }
     
-    @objc func start() {
+    @objc public func start() {
         sessionQueue.async {
             if !self.isSessionRunning && self.isConfigured {
                 switch self.setupResult {
@@ -457,7 +457,7 @@ public class CameraService: NSObject, Identifiable {
         }
     }
     
-    func set(zoom: CGFloat){
+    public func set(zoom: CGFloat){
         let factor = zoom < 1 ? 1 : zoom
         let device = self.videoDeviceInput.device
         
@@ -474,7 +474,7 @@ public class CameraService: NSObject, Identifiable {
     //    MARK: Capture Photo
     
     /// - Tag: CapturePhoto
-    func capturePhoto() {
+    public func capturePhoto() {
         /*
          Retrieve the video preview layer's video orientation on the main queue before
          entering the session queue. This to ensures that UI elements are accessed on
@@ -547,7 +547,7 @@ public class CameraService: NSObject, Identifiable {
     //  MARK: KVO & Observers
     
     /// - Tag: ObserveInterruption
-    func addObservers() {
+    private func addObservers() {
         let systemPressureStateObservation = observe(\.videoDeviceInput.device.systemPressureState, options: .new) { _, change in
             guard let systemPressureState = change.newValue else { return }
             self.setRecommendedFrameRateRangeForPressureState(systemPressureState: systemPressureState)
@@ -583,7 +583,7 @@ public class CameraService: NSObject, Identifiable {
                                                object: session)
     }
     
-    func removeObservers() {
+    private func removeObservers() {
         NotificationCenter.default.removeObserver(self)
         
         for keyValueObservation in keyValueObservations {
@@ -593,14 +593,14 @@ public class CameraService: NSObject, Identifiable {
     }
     
     @objc
-    func subjectAreaDidChange(notification: NSNotification) {
+    private func subjectAreaDidChange(notification: NSNotification) {
         let devicePoint = CGPoint(x: 0.5, y: 0.5)
         focus(with: .continuousAutoFocus, exposureMode: .continuousAutoExposure, at: devicePoint, monitorSubjectAreaChange: false)
     }
     
     /// - Tag: HandleRuntimeError
     @objc
-    func sessionRuntimeError(notification: NSNotification) {
+    private func sessionRuntimeError(notification: NSNotification) {
         guard let error = notification.userInfo?[AVCaptureSessionErrorKey] as? AVError else { return }
         
         print("Capture session runtime error: \(error)")
@@ -622,7 +622,7 @@ public class CameraService: NSObject, Identifiable {
     }
     
     /// - Tag: HandleSystemPressure
-    func setRecommendedFrameRateRangeForPressureState(systemPressureState: AVCaptureDevice.SystemPressureState) {
+    private func setRecommendedFrameRateRangeForPressureState(systemPressureState: AVCaptureDevice.SystemPressureState) {
         /*
          The frame rates used here are only for demonstration purposes.
          Your frame rate throttling may be different depending on your app's camera configuration.
@@ -645,7 +645,7 @@ public class CameraService: NSObject, Identifiable {
     
     /// - Tag: HandleInterruption
     @objc
-    func sessionWasInterrupted(notification: NSNotification) {
+    private func sessionWasInterrupted(notification: NSNotification) {
         /*
          In some scenarios you want to enable the user to resume the session.
          For example, if music playback is initiated from Control Center while
@@ -675,7 +675,7 @@ public class CameraService: NSObject, Identifiable {
     }
     
     @objc
-    func sessionInterruptionEnded(notification: NSNotification) {
+    private func sessionInterruptionEnded(notification: NSNotification) {
         print("Capture session interruption ended")
         DispatchQueue.main.async {
             self.isCameraUnavailable = false

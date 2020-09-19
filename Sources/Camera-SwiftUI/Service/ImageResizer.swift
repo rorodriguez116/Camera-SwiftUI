@@ -14,10 +14,10 @@ enum ImageResizingError: Error {
     case cannotRetrieveFromData
 }
 
-struct ImageResizer {
+public struct ImageResizer {
     var targetWidth: CGFloat
     
-    func resize(at url: URL) -> UIImage? {
+    public func resize(at url: URL) -> UIImage? {
         guard let image = UIImage(contentsOfFile: url.path) else {
             return nil
         }
@@ -25,7 +25,7 @@ struct ImageResizer {
         return self.resize(image: image)
     }
     
-    func resize(image: UIImage) -> UIImage {
+    public func resize(image: UIImage) -> UIImage {
         let originalSize = image.size
         let targetSize = CGSize(width: targetWidth, height: targetWidth*originalSize.height/originalSize.width)
         let renderer = UIGraphicsImageRenderer(size: targetSize)
@@ -34,7 +34,7 @@ struct ImageResizer {
         }
     }
     
-    func resize(data: Data) -> UIImage? {
+    public func resize(data: Data) -> UIImage? {
         guard let image = UIImage(data: data) else {return nil}
         return resize(image: image )
     }
