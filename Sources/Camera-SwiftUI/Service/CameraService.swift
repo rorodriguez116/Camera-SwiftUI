@@ -14,8 +14,13 @@ import UIKit
 
 //  MARK: Class Camera Service, handles setup of AVFoundation needed for a basic camera app.
 public struct Photo: Identifiable, Equatable {
-    public var id: String = UUID().uuidString
+    public var id: String
     public var originalData: Data
+    
+    public init(id: String = UUID().uuidString, originalData: Data) {
+        self.id = id
+        self.originalData = originalData
+    }
 }
 
 public struct AlertError {
@@ -25,6 +30,14 @@ public struct AlertError {
     public var secondaryButtonTitle: String?
     public var primaryAction: (() -> ())?
     public var secondaryAction: (() -> ())?
+    
+    public init(title: String = "", message: String = "", primaryButtonTitle: String = "Accept", secondaryButtonTitle: String? = nil, primaryAction: (() -> ())? = nil, secondaryAction: (() -> ())? = nil) {
+        self.title = title
+        self.message = message
+        self.primaryAction = primaryAction
+        self.primaryButtonTitle = primaryButtonTitle
+        self.secondaryAction = secondaryAction
+    }
 }
 
 extension Photo {
