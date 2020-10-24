@@ -76,9 +76,8 @@ public class CameraService: NSObject, Identifiable {
     
     // MARK: Session Management Properties
     
-    let session = AVCaptureSession()
+    public let session = AVCaptureSession()
     
-    public var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     var isSessionRunning = false
     var isConfigured = false
     var setupResult: SessionSetupResult = .success
@@ -111,10 +110,6 @@ public class CameraService: NSObject, Identifiable {
             self.isCameraButtonDisabled = true
             self.isCameraUnavailable = true
         }
-        
-        // Set up the video preview view with the current session.
-        videoPreviewLayer = AVCaptureVideoPreviewLayer(session: self.session)
-        videoPreviewLayer.videoGravity = .resizeAspectFill
     }
     
     public func configure() {
@@ -220,9 +215,6 @@ public class CameraService: NSObject, Identifiable {
                 session.addInput(videoDeviceInput)
                 self.videoDeviceInput = videoDeviceInput
                 
-                DispatchQueue.main.async {
-                    self.videoPreviewLayer.connection?.videoOrientation = .portrait
-                }
             } else {
                 print("Couldn't add video device input to the session.")
                 setupResult = .configurationFailed
@@ -394,9 +386,8 @@ public class CameraService: NSObject, Identifiable {
     }
     
     
-    public func focus(at point: CGPoint){
+    public func focus(at focusPoint: CGPoint){
         let device = self.videoDeviceInput.device
-        let focusPoint = self.videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: point)
         do {
             try device.lockForConfiguration()
             if device.isFocusPointOfInterestSupported {
@@ -495,12 +486,12 @@ public class CameraService: NSObject, Identifiable {
          */
         
         if self.setupResult != .configurationFailed {
-            let videoPreviewLayerOrientation = self.videoPreviewLayer.connection?.videoOrientation
+            let videoPreviewLayerOrientation: AVCaptureVideoOrientation = .portrait
             self.isCameraButtonDisabled = true
             
             sessionQueue.async {
                 if let photoOutputConnection = self.photoOutput.connection(with: .video) {
-                    photoOutputConnection.videoOrientation = videoPreviewLayerOrientation!
+                    photoOutputConnection.videoOrientation = videoPreviewLayerOrientation
                 }
                 var photoSettings = AVCapturePhotoSettings()
                 
@@ -574,6 +565,8 @@ public class CameraService: NSObject, Identifiable {
                                                name: .AVCaptureDeviceSubjectAreaDidChange,
                                                object: videoDeviceInput.device)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(uiRequestedNewFocusArea), name: .init(rawValue: "UserDidRequestNewFocusPoint"), object: nil)
+        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(sessionRuntimeError),
                                                name: .AVCaptureSessionRuntimeError,
@@ -603,6 +596,11 @@ public class CameraService: NSObject, Identifiable {
             keyValueObservation.invalidate()
         }
         keyValueObservations.removeAll()
+    }
+    
+    @objc private func uiRequestedNewFocusArea(notification: NSNotification) {
+        guard let userInfo = notification.userInfo as? [String: Any], let devicePoint = userInfo["devicePoint"] as? CGPoint else { return }
+        self.focus(at: devicePoint)
     }
     
     @objc
