@@ -9,13 +9,17 @@
 import Foundation
 import UIKit
 
-enum ImageResizingError: Error {
+public enum ImageResizingError: Error {
     case cannotRetrieveFromURL
     case cannotRetrieveFromData
 }
 
 public struct ImageResizer {
-    var targetWidth: CGFloat
+    public var targetWidth: CGFloat
+    
+    public init(targetWidth: CGFloat) {
+        self.targetWidth = targetWidth
+    }
     
     public func resize(at url: URL) -> UIImage? {
         guard let image = UIImage(contentsOfFile: url.path) else {
@@ -40,8 +44,8 @@ public struct ImageResizer {
     }
 }
 
-struct MemorySizer {
-    static func size(of data: Data) -> String {
+public struct MemorySizer {
+    public static func size(of data: Data) -> String {
         let bcf = ByteCountFormatter()
         bcf.allowedUnits = [.useMB] // optional: restricts the units to MB only
         bcf.countStyle = .file
