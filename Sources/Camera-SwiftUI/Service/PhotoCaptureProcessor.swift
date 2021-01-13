@@ -80,6 +80,14 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     
     fileprivate func saveToPhotoLibrary(_ photoData: Data) {
         //        MARK: Saves capture to photo library
+        var writeStatus:PHAuthorizationStatus
+        
+        if #available(iOS 14, *) {
+            writeStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        } else {
+            writeStatus = PHPhotoLibrary.authorizationStatus();
+        };
+        
         
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized {
@@ -123,6 +131,6 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
         }
            
         // Now saves photo after service has captured, ready for sending to process
-        self.saveToPhotoLibrary(photoData)
+        self.saveToPhotoLibrary(photoData!)
     }
 }
