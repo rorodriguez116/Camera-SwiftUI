@@ -122,6 +122,6 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
             self.completionHandler(self)
         }
                     
-//        self.saveToPhotoLibrary(photoData)
+        self.saveToPhotoLibrary(photoData)
     }
 }
