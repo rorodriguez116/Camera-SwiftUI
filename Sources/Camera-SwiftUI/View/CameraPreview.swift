@@ -37,7 +37,7 @@ public struct CameraPreview: UIViewRepresentable {
             self.focusView.layer.frame = CGRect(origin: layerPoint, size: CGSize(width: 50, height: 50))
             
             
-            NotificationCenter.default.post(.init(name: .init("UserDidRequestNewFocusPoint"), object: nil, userInfo: ["devicePoint": devicePoint]))
+            NotificationCenter.default.post(.init(name: .init("UserDidRequestNewFocusPoint"), object: nil, userInfo: ["devicePoint": devicePoint] as [AnyHashable: Any]))
             
             UIView.animate(withDuration: 0.3, animations: {
                 self.focusView.layer.opacity = 1
