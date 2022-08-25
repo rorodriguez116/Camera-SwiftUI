@@ -113,18 +113,20 @@ public class CameraService: NSObject, Identifiable {
     }
     
     public func configure() {
-        /*
-         Setup the capture session.
-         In general, it's not safe to mutate an AVCaptureSession or any of its
-         inputs, outputs, or connections from multiple threads at the same time.
-         
-         Don't perform these tasks on the main queue because
-         AVCaptureSession.startRunning() is a blocking call, which can
-         take a long time. Dispatch session setup to the sessionQueue, so
-         that the main queue isn't blocked, which keeps the UI responsive.
-         */
-        sessionQueue.async {
-            self.configureSession()
+        if !self.isSessionRunning && !self.isConfigured {
+            /*
+             Setup the capture session.
+             In general, it's not safe to mutate an AVCaptureSession or any of its
+             inputs, outputs, or connections from multiple threads at the same time.
+             
+             Don't perform these tasks on the main queue because
+             AVCaptureSession.startRunning() is a blocking call, which can
+             take a long time. Dispatch session setup to the sessionQueue, so
+             that the main queue isn't blocked, which keeps the UI responsive.
+             */
+            sessionQueue.async {
+                self.configureSession()
+            }
         }
     }
     
