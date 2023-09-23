@@ -34,9 +34,12 @@ public struct CameraPreview: UIViewRepresentable {
             let layerPoint = gestureRecognizer.location(in: gestureRecognizer.view)
             let devicePoint = videoPreviewLayer.captureDevicePointConverted(fromLayerPoint: layerPoint)
             
-            self.focusView.layer.frame = CGRect(origin: layerPoint, size: CGSize(width: 50, height: 50))
-            
-            
+            let focusCircleDiam: CGFloat = 50
+            let shiftedLayerPoint = CGPoint(x: layerPoint.x - (focusCircleDiam / 2),
+                y: layerPoint.y - (focusCircleDiam / 2))
+                        
+            focusView.layer.frame = CGRect(origin: shiftedLayerPoint, size: CGSize(width: focusCircleDiam, height: focusCircleDiam))
+      
             NotificationCenter.default.post(.init(name: .init("UserDidRequestNewFocusPoint"), object: nil, userInfo: ["devicePoint": devicePoint] as [AnyHashable: Any]))
             
             UIView.animate(withDuration: 0.3, animations: {
