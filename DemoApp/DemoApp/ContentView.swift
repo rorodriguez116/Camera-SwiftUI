@@ -141,7 +141,7 @@ struct CameraView: View {
                         })
                         .accentColor(model.isFlashOn ? .yellow : .white)
                         
-                        CameraPreview(session: model.session)
+                        CameraPreview(configuration: .init(session: model.session))
                             .gesture(
                                 DragGesture().onChanged({ (val) in
                                     //  Only accept vertical drag

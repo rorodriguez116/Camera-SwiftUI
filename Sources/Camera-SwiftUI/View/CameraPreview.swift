@@ -11,6 +11,20 @@ import AVFoundation
 import SwiftUI
 
 public struct CameraPreview: UIViewRepresentable {
+    
+    public struct Configuration {
+        let session: AVCaptureSession
+        let videoGravity: AVLayerVideoGravity
+        
+        init(
+            session: AVCaptureSession,
+            videoGravity: AVLayerVideoGravity = .resizeAspect
+        ) {
+            self.session = session
+            self.videoGravity = videoGravity
+        }
+    }
+    
     public class VideoPreviewView: UIView {
         public override class var layerClass: AnyClass {
             AVCaptureVideoPreviewLayer.self
@@ -63,18 +77,19 @@ public struct CameraPreview: UIViewRepresentable {
         }
     }
     
-    public let session: AVCaptureSession
+    public let configuration: Configuration
     
-    public init(session: AVCaptureSession) {
-        self.session = session
+    public init(configuration: Configuration) {
+        self.configuration = configuration
     }
     
     public func makeUIView(context: Context) -> VideoPreviewView {
         let viewFinder = VideoPreviewView()
         viewFinder.backgroundColor = .black
         viewFinder.videoPreviewLayer.cornerRadius = 0
-        viewFinder.videoPreviewLayer.session = session
+        viewFinder.videoPreviewLayer.session = configuration.session
         viewFinder.videoPreviewLayer.connection?.videoOrientation = .portrait
+        viewFinder.videoPreviewLayer.videoGravity = configuration.videoGravity
         return viewFinder
     }
     
@@ -84,8 +99,9 @@ public struct CameraPreview: UIViewRepresentable {
 }
 
 struct CameraPreview_Previews: PreviewProvider {
+    
     static var previews: some View {
-        CameraPreview(session: AVCaptureSession())
+        CameraPreview(configuration: .init(session: AVCaptureSession()))
             .frame(height: 300)
     }
 }
